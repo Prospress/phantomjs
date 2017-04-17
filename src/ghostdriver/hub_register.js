@@ -33,13 +33,23 @@ var nodeconf = function(ip, port, hub, proxy, version) {
         hubHost = ref$[1];
         hubPort = +ref$[2]; //< ensure it's of type "number"
 
-        var ghostdriver = ghostdriver || {};
+        var platform;
+
+        if(ghostdriver && ghostdriver.system){
+            platform = ghostdriver.system.os.name.toUpperCase();
+        }
+        else{
+            // The prior behavior was to just assume Linux.
+            // Worst case scenario, we get the status quo, but
+            // this block is really just a guard condition anyway
+            platform = "LINUX";
+        }
 
         return {
             capabilities: [{
                 browserName: "phantomjs",
                 version: version,
-                platform: ghostdriver.system.os.name + '-' + ghostdriver.system.os.version + '-' + ghostdriver.system.os.architecture,
+                platform: platform,
                 maxInstances: 1,
                 seleniumProtocol: "WebDriver"
             }],
